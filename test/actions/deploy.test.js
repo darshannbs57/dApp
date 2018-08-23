@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import Web3 from 'web3';
 import FakeProvider from 'web3-fake-provider';
+import store from '../../src/store';
 
 import {
   MarketContractRegistry,
@@ -45,6 +46,8 @@ describe('DeployAction', () => {
   let deployParams;
   let dispatchSpy;
 
+
+
   function runDeployAction() {
     const deployAction = deployContract(deployParams, contractParams);
     return deployAction(dispatchSpy);
@@ -68,8 +71,19 @@ describe('DeployAction', () => {
     dispatchSpy = sinon.spy();
   });
 
-  it('should dispatch deploy contract fulfilled', async () => {
+  it('should call deployMarketContractOraclizeAsync and dispatch deploy contract fulfilled', async () => {
+    let stub = sinon.stub();
+    stub.returns(Promise.resolve('0x0'));
+    let storeStub = sinon.stub(store, "getState");
+    storeStub.returns({
+      marketjs: {
+        deployMarketContractOraclizeAsync: stub,
+        getDeployedMarketContractAddressFromTxHash: stub,
+        deployMarketCollateralPoolAsync: stub
+      }
+    });
     return runDeployAction().then(() => {
+      expect(stub.called).to.equal(true);
       expect(dispatchSpy).to.have.property('callCount', 5);
       expect(dispatchSpy.args[4][0].type).to.equals(
         'DEPLOY_CONTRACT_FULFILLED'
@@ -83,21 +97,6 @@ describe('DeployAction', () => {
     return runDeployAction().catch(() => {
       expect(dispatchSpy).to.have.property('callCount', 2);
       expect(dispatchSpy.args[1][0].type).to.equals('DEPLOY_CONTRACT_REJECTED');
-    });
-  });
-
-  it('should dispatch error if MarketToken is not deployed', () => {
-    const notDeployedError = Error('MarketToken not deployed');
-    contractParams.MarketToken.deployed = () =>
-      Promise.reject(notDeployedError);
-
-    return runDeployAction().catch(() => {
-      expect(dispatchSpy).to.have.property('callCount', 2);
-      expect(dispatchSpy.args[0][0].type).to.equals('DEPLOY_CONTRACT_PENDING');
-      expect(dispatchSpy.args[1][0].type).to.equals('DEPLOY_CONTRACT_REJECTED');
-      expect(dispatchSpy.args[1][0].payload).to.equals(
-        'MarketToken not deployed'
-      );
     });
   });
 
