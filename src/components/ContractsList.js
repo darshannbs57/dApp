@@ -8,7 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { SpringGrid, makeResponsive } from 'react-stonecutter';
 import moment from 'moment';
 const Search = Input.Search;
-const Grid = makeResponsive(SpringGrid, { maxWidth: 1920 });
+const Grid = makeResponsive(SpringGrid, { maxWidth: 900 });
 // Example Contract
 /* {
   "COLLATERAL_TOKEN": "0xa4392264a2d8c998901d10c154c91725b1bf0158",
@@ -58,7 +58,14 @@ class ContractsList extends Component {
       oracleFiltered: false
     });
   }
-
+  renderExpiredTime(text) {
+    let formatedTime = formatedTimeFrom(text);
+    return formatedTime.includes('s') ? (
+      <span style={{ color: '#E41640' }}>{formatedTime}</span>
+    ) : (
+      formatedTime
+    );
+  }
   handleChange = (pagination, filters, sorter) => {
     console.log(pagination);
     this.setState({
@@ -212,12 +219,7 @@ class ContractsList extends Component {
         dataIndex: 'EXPIRATION',
         width: 200,
         render: (text, row, index) => {
-          let formatedTime = formatedTimeFrom(text);
-          return formatedTime.includes('s') ? (
-            <span style={{ color: '#E41640' }}>{formatedTime}</span>
-          ) : (
-            formatedTime
-          );
+          return this.renderExpiredTime(text);
         },
         sorter: (a, b) => a.EXPIRATION - b.EXPIRATION,
         sortOrder: sort.columnKey === 'EXPIRATION' && sort.order
@@ -294,20 +296,35 @@ class ContractsList extends Component {
     if (this.state.isGrid) {
       table = (
         <Grid
-          columns={5}
-          columnWidth={150}
-          gutterWidth={5}
-          gutterHeight={5}
-          itemHeight={200}
+          columns={4}
+          columnWidth={260}
+          gutterWidth={20}
+          gutterHeight={20}
+          itemHeight={300}
           springConfig={{ stiffness: 170, damping: 26 }}
         >
-          <div> poop</div>
           {this.state.contracts.map(contract => {
             console.log(contract);
             return (
-              <div class="gridItem" key={'contract_' + contract.key}>
-                <div class="gridTitle">
-                  {'Efeafef'} {contract.CONTRACT_NAME}{' '}
+              <div className="gridItem" key={'contract_' + contract.key}>
+                <div className="ref_asset">
+                  {contract.CONTRACT_NAME.split('_')[0]}
+                </div>
+
+                <div className="col_asset">
+                  {contract.CONTRACT_NAME.split('_')[1]}
+                </div>
+
+                <div className="gridTitle">{contract.CONTRACT_NAME}</div>
+                <div>
+                  {'collateral'} {contract.COLLATERAL_TOKEN_SYMBOL}
+                </div>
+                <div>
+                  {'balance:'} {contract.collateralPoolBalance}
+                </div>
+                <div>{this.renderExpiredTime(contract.EXPIRATION)}</div>
+                <div>
+                  {'collateral'} {contract.COLLATERAL_TOKEN_SYMBOL}
                 </div>
               </div>
             );
