@@ -1,13 +1,14 @@
-import { Col, Input, Row, Table, Select, Popover, Icon } from 'antd';
+import { Col, Input, Row, Table, Select, Popover, Icon, Switch } from 'antd';
 import { formatedTimeFrom } from '../util/utils';
 import React, { Component } from 'react';
 
 import '../less/ContractsList.less';
 import Loader from './Loader';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
+import { SpringGrid, makeResponsive } from 'react-stonecutter';
 import moment from 'moment';
 const Search = Input.Search;
+const Grid = makeResponsive(SpringGrid, { maxWidth: 1920 });
 // Example Contract
 /* {
   "COLLATERAL_TOKEN": "0xa4392264a2d8c998901d10c154c91725b1bf0158",
@@ -29,6 +30,7 @@ class ContractsList extends Component {
     contracts: this.props.contracts,
     page: 1,
     pageSize: 25,
+    isGrid: true,
     selectedContractFilter: 'All Contracts',
     allContractsFilters: {
       'All Contracts': contract => contract,
@@ -70,6 +72,10 @@ class ContractsList extends Component {
     this.setState({ [searchKey]: e.target.value });
   };
 
+  onGridChange = checked => {
+    console.log('efae', checked);
+    this.setState({ isGrid: checked });
+  };
   onSearch = (dataKey, searchKey, searchVisibleKey, filteredKey) => {
     const searchText = this.state[searchKey];
     const reg = new RegExp(searchText, 'gi');
@@ -281,11 +287,34 @@ class ContractsList extends Component {
         // scroll={{ y: '60vh' }}
       />
     );
-    this.table = table;
+
     if (this.state.contracts.length === 0) {
       table = <div>No contracts found</div>;
     }
-
+    if (this.state.isGrid) {
+      table = (
+        <Grid
+          columns={5}
+          columnWidth={150}
+          gutterWidth={5}
+          gutterHeight={5}
+          itemHeight={200}
+          springConfig={{ stiffness: 170, damping: 26 }}
+        >
+          <div> poop</div>
+          {this.state.contracts.map(contract => {
+            console.log(contract);
+            return (
+              <div class="gridItem" key={'contract_' + contract.key}>
+                <div class="gridTitle">
+                  {'Efeafef'} {contract.CONTRACT_NAME}{' '}
+                </div>
+              </div>
+            );
+          })}
+        </Grid>
+      );
+    }
     return (
       <div className="page contractPage" style={{ margin: '0 13%' }}>
         <Row
@@ -355,6 +384,9 @@ class ContractsList extends Component {
                 </Option>
               ))}
             </Select>
+          </Col>
+          <Col>
+            <Switch defaultChecked onChange={this.onGridChange.bind(this)} />
           </Col>
         </Row>
         <style
