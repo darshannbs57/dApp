@@ -97,7 +97,12 @@ class BuyTable extends Component {
     return (
       <Fragment>
         <Row>
-          <Table dataSource={this.state.transactions} columns={columns} />
+          <Table
+            dataSource={this.state.transactions}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 250 }}
+          />
         </Row>
       </Fragment>
     );

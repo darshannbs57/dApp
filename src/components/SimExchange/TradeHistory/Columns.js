@@ -2,12 +2,14 @@ export default [
   {
     title: 'Qty',
     dataIndex: 'qty',
-    key: 'qty'
+    key: 'qty',
+    width: 80
   },
   {
     title: 'Price',
     dataIndex: 'price',
-    key: 'price'
+    key: 'price',
+    width: 120
   },
   {
     title: 'Time',

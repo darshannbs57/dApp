@@ -26,6 +26,36 @@
         margin-bottom: 3rem;
     }
 }
+#trading {
+    &.sell {
+        .ant-tabs-ink-bar.ant-tabs-ink-bar-animated {
+            background-color: @secondary-color;
+        }
+        .ant-tabs-nav {
+            .ant-tabs-tab {
+                &:hover {
+                    color: @primary-color;
+                }
+                &.ant-tabs-tab-active {
+                    color: @secondary-color;
+                    &:hover {
+                        color: @secondary-color;
+                    }
+                }
+            }
+        }
+        .sim-ex-action-btn {
+            background-color: @secondary-color;
+            border-color: @secondary-color;
+        }
+    }
+    .ant-tabs-tab:hover {
+        color: @secondary-color;
+    }
+    .ant-tabs-tab-active:hover {
+        color: @primary-color;
+    }
+}
 
 #sim-exchange {
     .column-container {
@@ -164,15 +194,14 @@
         font-size: 12px;
         color: #cccccc;
         font-weight: 300;
-        padding-top: 10px;
-        padding-bottom: 0px;
+        padding: 10px 0 15px 15px;
     }
 
     .ant-table-tbody > tr > td {
         background: #181e26;
         border-bottom: none;
-        padding-bottom: 0;
-        padding-top: 10px;
+        padding-bottom: 5px;
+        padding-top: 5px;
     }
 
     .info-icon {
@@ -182,6 +211,12 @@
         padding-left: 10px;
         font-weight: 300;
         font-size: 12px;
+        cursor: pointer;
+    }
+
+    // Hiding ugly default scrollbars in windows for webkit browsers
+    ::-webkit-scrollbar {
+        display: none;
     }
 }
 

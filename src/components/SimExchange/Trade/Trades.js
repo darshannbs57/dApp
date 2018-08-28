@@ -12,7 +12,6 @@ class Trades extends Component {
   constructor(props) {
     super(props);
 
-    this.getOrders = this.getOrders.bind(this);
     this.getUnallocatedCollateral = this.getUnallocatedCollateral.bind(this);
 
     this.state = {
@@ -28,8 +27,10 @@ class Trades extends Component {
       simExchange.contract.MARKET_COLLATERAL_POOL_ADDRESS
     ) {
       this.getUnallocatedCollateral(this.props);
-      // this.getOrders(simExchange.contract.key);
     }
+    this.setState({
+      activeTab: 1
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -38,24 +39,7 @@ class Trades extends Component {
 
     if (newContract !== oldContract && newContract !== null) {
       this.getUnallocatedCollateral(this.props);
-      // this.getOrders(newContract.key);
     }
-  }
-
-  getOrders(contractAddress) {
-    fetch(`https://dev.api.marketprotocol.io/orders/${contractAddress}/`)
-      .then(function(response) {
-        return response.json();
-      })
-      .then(
-        function(response) {
-          this.setState({
-            buys: response.buys,
-            sells: response.sells,
-            contract: response.contract
-          });
-        }.bind(this)
-      );
   }
 
   getUnallocatedCollateral(props) {
@@ -73,12 +57,29 @@ class Trades extends Component {
     }
   }
 
+  toggleColorScheme(activeKey) {
+    this.setState({
+      activeTab: activeKey
+    });
+  }
+
   render() {
     const { buys, sells, contract } = this.state;
 
     return (
-      <div id="trading" className="sim-ex-container m-top-10">
-        <Tabs defaultActiveKey="1">
+      <div
+        id="trading"
+        className={
+          'sim-ex-container m-top-10' +
+          (this.state.activeTab == 2 ? ' sell' : '')
+        }
+      >
+        <Tabs
+          defaultActiveKey="1"
+          onChange={activeKey => {
+            this.toggleColorScheme(activeKey);
+          }}
+        >
           <TabPane tab="Buy" key="1">
             <div className="sim-ex-inner-container">
               <TradeContainer

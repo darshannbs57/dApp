@@ -96,21 +96,19 @@ class Wallet extends Component {
                 {...this.props} />
             </TabPane>
             <TabPane tab="History" key="2">
-              <div className="sim-ex-inner-container" style={{ paddingTop: '0' }}>
                 <Table {...this.props} />
-              </div>
             </TabPane>
           </Tabs>
         </div>
       }
-      <Button
-        onClick={this.onToggle}
-        htmlType="submit"
-        style={{ width: '100%' }}
-        className="sim-ex-toggle-btn "
-      >
-        { this.state.toggleTitle }
-      </Button>
+        <Button
+          onClick={this.onToggle}
+          htmlType="submit"
+          style={{ width: '100%' }}
+          className="sim-ex-toggle-btn "
+        >
+          { this.state.toggleTitle }
+        </Button>
       </div>
     );
   }
